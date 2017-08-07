@@ -82,8 +82,14 @@ if sys.version_info < (2, 7):
 # Read Config from config.ini file
 #
 
+FILENAME = "uploadr.ini"
+if ( not os.path.exists(FILENAME) ):
+    sys.stderr.write('Error : The configuration file uploadr.ini is missing\n')
+    sys.stderr.write('Please create your own uploadr.ini\n')
+    sys.stderr.write('You can find an example of file : example_uploadr.ini\n')
+    sys.exit(-1)
 config = ConfigParser.ConfigParser()
-config.read(os.path.join(os.path.dirname(sys.argv[0]), "uploadr.ini"))
+config.read(os.path.join(os.path.dirname(sys.argv[0]), FILENAME))
 FILES_DIR = eval(config.get('Config', 'FILES_DIR'))
 FLICKR = eval(config.get('Config', 'FLICKR'))
 SLEEP_TIME = eval(config.get('Config', 'SLEEP_TIME'))
