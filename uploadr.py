@@ -109,6 +109,11 @@ FULL_SET_NAME = eval(config.get('Config', 'FULL_SET_NAME'))
 SOCKET_TIMEOUT = eval(config.get('Config', 'SOCKET_TIMEOUT'))
 MAX_UPLOAD_ATTEMPTS = eval(config.get('Config', 'MAX_UPLOAD_ATTEMPTS'))
 DELETE_FLICKR_FILES = eval(config.get('Config','DELETE_FLICKR_FILES'))
+TAG_CHECKSUM = eval(config.get('Config','TAG_CHECKSUM'))
+if MANAGE_CHANGES and not TAG_CHECKSUM:
+    sys.stderr.write('TAG_CHECKSUM is required to use MANAGE_CHANGES\n')
+    sys.stderr.write('Please update your uploadr.ini\n')
+    sys.exit(-2)
 
 class APIConstants:
     """ APIConstants class
@@ -524,13 +529,16 @@ class Uploadr:
                         FLICKR["tags"] += " "
 
                     file_checksum = self.md5Checksum(file)
+                    tags = '{}'.format(FLICKR["tags"]).replace(',', '')
+                    if TAG_CHECKSUM:
+                        tags = '{} {} checksum:{}'.format(FLICKR["tags"], setName.encode('utf-8'), file_checksum).replace(',', '')
                     d = {
                         "auth_token": str(self.token),
                         "perms": str(self.perms),
                         "title": str(FLICKR["title"]),
                         "description": str(FLICKR["description"]),
                         # replace commas to avoid tags conflicts
-                        "tags": '{} {} checksum:{}'.format(FLICKR["tags"], setName.encode('utf-8'), file_checksum).replace(',', ''),
+                        "tags": tags,
                         "is_public": str(FLICKR["is_public"]),
                         "is_friend": str(FLICKR["is_friend"]),
                         "is_family": str(FLICKR["is_family"])
