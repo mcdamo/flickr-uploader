@@ -109,6 +109,7 @@ FULL_SET_NAME = eval(config.get('Config', 'FULL_SET_NAME'))
 SOCKET_TIMEOUT = eval(config.get('Config', 'SOCKET_TIMEOUT'))
 MAX_UPLOAD_ATTEMPTS = eval(config.get('Config', 'MAX_UPLOAD_ATTEMPTS'))
 DELETE_FLICKR_FILES = eval(config.get('Config','DELETE_FLICKR_FILES'))
+DELETE_DB_SETS = eval(config.get('Config','DELETE_DB_SETS'))
 TAG_CHECKSUM = eval(config.get('Config','TAG_CHECKSUM'))
 if MANAGE_CHANGES and not TAG_CHECKSUM:
     sys.stderr.write('TAG_CHECKSUM is required to use MANAGE_CHANGES\n')
@@ -1207,7 +1208,8 @@ if __name__ == "__main__":
             flick.authenticate()
         # flick.displaySets()
 
-        flick.removeUselessSetsTable()
+        if DELETE_DB_SETS:
+            flick.removeUselessSetsTable()
         flick.getFlickrSets()
         flick.convertRawFiles()
         flick.upload()
