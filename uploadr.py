@@ -496,6 +496,13 @@ class Uploadr:
         
         return False
 
+    def getSetNameFromPath(self, file):
+        if FULL_SET_NAME:
+            setName = os.path.relpath(os.path.dirname(file), FILES_DIR)
+        else:
+            head, setName = os.path.split(os.path.dirname(file))
+        return setName
+
     def uploadFile(self, file):
         """ uploadFile
         """
@@ -516,10 +523,7 @@ class Uploadr:
             if row is None:
                 print("Uploading " + file + "...")
 
-                if FULL_SET_NAME:
-                    setName = os.path.relpath(os.path.dirname(file), FILES_DIR)
-                else:
-                    head, setName = os.path.split(os.path.dirname(file))
+                setName = getSetNameFromPath(file)
                 try:
                     photo = ('photo', file.encode('utf-8'), open(file, 'rb').read())
                     if args.title:  # Replace
@@ -848,10 +852,7 @@ class Uploadr:
             files = cur.fetchall()
 
             for row in files:
-                if FULL_SET_NAME:
-                    setName = os.path.relpath(os.path.dirname(row[1]), FILES_DIR)
-                else:
-                    head, setName = os.path.split(os.path.dirname(row[1]))
+                setName = getSetNameFromPath(row[1])
                 newSetCreated = False
 
                 cur.execute("SELECT set_id, name FROM sets WHERE name = ?", (setName,))
@@ -898,10 +899,7 @@ class Uploadr:
             else:
                 if (res['code'] == 1):
                     print("Photoset not found, creating new set...")
-                    if FULL_SET_NAME:
-                        setName = os.path.relpath(os.path.dirname(file[1]), FILES_DIR)
-                    else:
-                        head, setName = os.path.split(os.path.dirname(file[1]))
+                    setName = getSetNameFromPath(file[1])
                     con = lite.connect(DB_PATH)
                     con.text_factory = str
                     self.createSet(setName, file[0], cur, con)
