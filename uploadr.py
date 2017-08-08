@@ -393,11 +393,12 @@ class Uploadr:
             con = lite.connect(DB_PATH)
             with con:
                 cur = con.cursor()
-                cur.execute("SELECT path FROM files")
+                cur.execute("SELECT path FROM files ORDER BY path")
                 existingMedia = set(file[0] for file in cur.fetchall())
                 changedMedia = set(allMedia) - existingMedia
 
         changedMedia_count = len(changedMedia)
+        changedMedia = sorted(changedMedia)
         print("Found " + str(changedMedia_count) + " files")
 
 
