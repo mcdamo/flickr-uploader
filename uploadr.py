@@ -523,7 +523,7 @@ class Uploadr:
             if row is None:
                 print("Uploading " + file + "...")
 
-                setName = getSetNameFromPath(file)
+                setName = self.getSetNameFromPath(file)
                 try:
                     photo = ('photo', file.encode('utf-8'), open(file, 'rb').read())
                     if args.title:  # Replace
@@ -852,7 +852,7 @@ class Uploadr:
             files = cur.fetchall()
 
             for row in files:
-                setName = getSetNameFromPath(row[1])
+                setName = self.getSetNameFromPath(row[1])
                 newSetCreated = False
 
                 cur.execute("SELECT set_id, name FROM sets WHERE name = ?", (setName,))
@@ -899,7 +899,7 @@ class Uploadr:
             else:
                 if (res['code'] == 1):
                     print("Photoset not found, creating new set...")
-                    setName = getSetNameFromPath(file[1])
+                    setName = self.getSetNameFromPath(file[1])
                     con = lite.connect(DB_PATH)
                     con.text_factory = str
                     self.createSet(setName, file[0], cur, con)
