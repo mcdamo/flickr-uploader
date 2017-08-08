@@ -408,7 +408,15 @@ class Uploadr:
             pool.map(self.uploadFile, changedMedia)
         else:
             count = 0
+            setNameLast = ''
             for i, file in enumerate(changedMedia):
+                # compare current setName to previous, if no match then this is a new set
+                # apply all the previous uploads to their set
+                setName = self.getSetNameFromPath(file)
+                if count > 0 and setNameLast != setName:
+                    self.createSets()
+                setNameLast = setName
+                # upload file
                 success = self.uploadFile(file)
                 if args.drip_feed and success and i != changedMedia_count - 1:
                     print("Waiting " + str(DRIP_TIME) + " seconds before next upload")
@@ -1186,8 +1194,9 @@ if __name__ == "__main__":
                         help='Dry run')
     parser.add_argument('-g', '--remove-ignored', action='store_true',
                         help='Remove previously uploaded files, now ignored')
-    args = parser.parse_args() 
-    print args.dry_run
+    args = parser.parse_args()
+    if args.dry_run:
+        print("DRY RUN")
 
     flick = Uploadr()
 
