@@ -108,7 +108,7 @@ CONVERT_RAW_FILES = eval(config.get('Config', 'CONVERT_RAW_FILES'))
 FULL_SET_NAME = eval(config.get('Config', 'FULL_SET_NAME'))
 SOCKET_TIMEOUT = eval(config.get('Config', 'SOCKET_TIMEOUT'))
 MAX_UPLOAD_ATTEMPTS = eval(config.get('Config', 'MAX_UPLOAD_ATTEMPTS'))
-
+DELETE_FLICKR_FILES = eval(config.get('Config','DELETE_FLICKR_FILES'))
 
 class APIConstants:
     """ APIConstants class
@@ -1204,9 +1204,10 @@ if __name__ == "__main__":
         flick.getFlickrSets()
         flick.convertRawFiles()
         flick.upload()
-        flick.removeDeletedMedia()
-        if args.remove_ignored:
-            flick.removeIgnoredMedia()
+        if DELETE_FLICKR_FILES:
+            flick.removeDeletedMedia()
+            if args.remove_ignored:
+                flick.removeIgnoredMedia()
         flick.createSets()
         flick.print_stat()
 
